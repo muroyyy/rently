@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Calendar, Star, Shield, Award, Phone, Mail, Menu, X, Upload, CheckCircle, Clock, AlertCircle, Users, Building2, FileText, DollarSign } from 'lucide-react';
+import { Heart, MapPin, Calendar, Star, Shield, Award, Phone, Mail, Menu, X, Upload, CheckCircle, Clock, AlertCircle, Users, Building2, FileText, DollarSign, ArrowLeft } from 'lucide-react';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -8,6 +8,7 @@ function App() {
   const [userType, setUserType] = useState('');
   const [animalType, setAnimalType] = useState('');
   const [registrationStep, setRegistrationStep] = useState(1);
+  const [navigationHistory, setNavigationHistory] = useState(['home']);
 
   const animals = [
     {
@@ -54,6 +55,20 @@ function App() {
     }
   ];
 
+  const navigateTo = (page) => {
+    setNavigationHistory(prev => [...prev, page]);
+    setCurrentPage(page);
+  };
+
+  const navigateBack = () => {
+    if (navigationHistory.length > 1) {
+      const newHistory = navigationHistory.slice(0, -1);
+      const previousPage = newHistory[newHistory.length - 1];
+      setNavigationHistory(newHistory);
+      setCurrentPage(previousPage);
+    }
+  };
+
   const Navigation = () => (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
@@ -66,19 +81,22 @@ function App() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
             <button 
-              onClick={() => setCurrentPage('home')}
+              onClick={() => {
+                setNavigationHistory(['home']);
+                setCurrentPage('home');
+              }}
               className={`text-gray-700 hover:text-rose-500 font-medium ${currentPage === 'home' ? 'text-rose-500 border-b-2 border-rose-500' : ''}`}
             >
               Home
             </button>
             <button 
-              onClick={() => setCurrentPage('animals')}
+              onClick={() => navigateTo('animals')}
               className={`text-gray-700 hover:text-rose-500 font-medium ${currentPage === 'animals' ? 'text-rose-500 border-b-2 border-rose-500' : ''}`}
             >
               Animals
             </button>
             <button 
-              onClick={() => setCurrentPage('register')}
+              onClick={() => navigateTo('register')}
               className={`text-gray-700 hover:text-rose-500 font-medium ${currentPage === 'register' ? 'text-rose-500 border-b-2 border-rose-500' : ''}`}
             >
               Register
@@ -90,7 +108,7 @@ function App() {
               Pricing
             </button>
             <button 
-              onClick={() => setCurrentPage('about')}
+              onClick={() => navigateTo('about')}
               className={`text-gray-700 hover:text-rose-500 font-medium ${currentPage === 'about' ? 'text-rose-500 border-b-2 border-rose-500' : ''}`}
             >
               About
@@ -182,7 +200,7 @@ function App() {
               <div 
                 onClick={() => {
                   setAnimalType('ESA');
-                  setCurrentPage('register');
+                  navigateTo('register');
                 }}
                 className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-rose-300"
               >
@@ -193,7 +211,7 @@ function App() {
               <div 
                 onClick={() => {
                   setAnimalType('Service');
-                  setCurrentPage('register');
+                  navigateTo('register');
                 }}
                 className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-rose-300"
               >
@@ -206,13 +224,13 @@ function App() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => setCurrentPage('register')}
+              onClick={() => navigateTo('register')}
               className="bg-rose-400 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-rose-500 transition-colors shadow-lg"
             >
               Get Started
             </button>
             <button 
-              onClick={() => setCurrentPage('about')}
+              onClick={() => navigateTo('about')}
               className="bg-white text-rose-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg border-2 border-rose-400"
             >
               Learn More
@@ -300,6 +318,15 @@ function App() {
   const RegisterPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        {navigationHistory.length > 1 && (
+          <button
+            onClick={navigateBack}
+            className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </button>
+        )}
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Registration</h1>
         
         {/* User Type Selection */}
@@ -711,6 +738,15 @@ function App() {
   const AnimalsPage = () => (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
+        {currentPage !== 'home' && navigationHistory.length > 1 && (
+          <button
+            onClick={navigateBack}
+            className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </button>
+        )}
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Our Certified Companions</h1>
         
         {/* Filters */}
@@ -793,7 +829,7 @@ function App() {
                   <button 
                     onClick={() => {
                       setSelectedAnimal(animal);
-                      setCurrentPage('consultation');
+                      navigateTo('consultation');
                     }}
                     className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl font-semibold text-sm hover:bg-gray-300 transition-colors"
                   >
@@ -802,7 +838,7 @@ function App() {
                   <button 
                     onClick={() => {
                       setSelectedAnimal(animal);
-                      setCurrentPage('booking');
+                      navigateTo('booking');
                     }}
                     className="flex-1 bg-rose-400 text-white py-2 rounded-xl font-semibold text-sm hover:bg-rose-500 transition-colors"
                   >
@@ -820,6 +856,13 @@ function App() {
   const BookingPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        <button
+          onClick={navigateBack}
+          className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to Animals
+        </button>
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Book Your Companion</h1>
         
         {selectedAnimal && (
@@ -964,6 +1007,13 @@ function App() {
   const ConsultationPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        <button
+          onClick={navigateBack}
+          className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to Animals
+        </button>
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Book Consultation</h1>
         
         {selectedAnimal && (
@@ -1059,6 +1109,15 @@ function App() {
   const AboutPage = () => (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        {navigationHistory.length > 1 && (
+          <button
+            onClick={navigateBack}
+            className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </button>
+        )}
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">About RENTLY</h1>
         
         {/* Mission Section */}
@@ -1157,6 +1216,14 @@ function App() {
               <p className="text-gray-600 text-sm">Working with disability rights and animal welfare organizations</p>
             </div>
           </div>
+          <div className="text-center mt-8">
+            <button
+              onClick={() => navigateTo('compliance')}
+              className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:from-rose-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              View Compliance & Certifications
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1165,6 +1232,13 @@ function App() {
   const CompliancePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        <button
+          onClick={navigateBack}
+          className="mb-6 flex items-center text-rose-600 hover:text-rose-700 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </button>
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Compliance & Accessibility</h1>
         
         {/* Regulatory Compliance */}
