@@ -335,7 +335,10 @@ function App() {
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Select Account Type</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div 
-                onClick={() => setUserType('individual')}
+                onClick={() => {
+                  setUserType('individual');
+                  navigateTo('register'); 
+                }}
                 className="p-6 border-2 border-gray-200 rounded-2xl hover:border-rose-300 cursor-pointer transition-colors"
               >
                 <Users className="h-12 w-12 text-rose-400 mb-4" />
@@ -343,7 +346,10 @@ function App() {
                 <p className="text-gray-600">Personal use for emotional support or service animal needs</p>
               </div>
               <div 
-                onClick={() => setUserType('institution')}
+                onClick={() => {
+                  setUserType('institution');
+                  navigateTo('register');
+                }}
                 className="p-6 border-2 border-gray-200 rounded-2xl hover:border-rose-300 cursor-pointer transition-colors"
               >
                 <Building2 className="h-12 w-12 text-orange-400 mb-4" />
